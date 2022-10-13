@@ -14,7 +14,7 @@ interface Props {
 }
 
 const DeviceDataProvider:FC<Props> = ({children}) => {
-  const host = "http://localhost:8080";
+  const host = "http://localhost:4000";
   const deviceDataInitial = [];
   const actualDataInitial = {};
   const [deviceData, setDeviceData] = useState(deviceDataInitial);

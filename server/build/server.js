@@ -74,10 +74,10 @@ var StartServer = function () {
         next();
     });
     /** Routes */
-    router.use('/devices', cors(), Device_1.default);
-    router.use('/devicedata', cors(), DeviceData_1.default);
+    router.use('/api/devices', cors(), Device_1.default);
+    router.use('/api/devicedata', cors(), DeviceData_1.default);
     /** Healthcheck */
-    router.get('/ping', function (req, res, next) { return res.status(200).json({ message: 'pong' }); });
+    router.get('/api/ping', function (req, res, next) { return res.status(200).json({ message: 'pong' }); });
     /** Error handling */
     router.use(function (req, res, next) {
         Logging_1.default.warning("URL : ".concat(req.url));

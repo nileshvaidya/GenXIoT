@@ -69,7 +69,11 @@ export class ServerSocket {
             pingTimeout: 5000,
             cookie: false,
             cors: {
-                origin: '*'
+                origin: '*',
+                methods: ["GET", "POST"],
+                allowedHeaders:['Access-Control-Allow-Origin'],
+                credentials: true
+
             }
         });
 

@@ -139,7 +139,10 @@ var ServerSocket = /** @class */ (function () {
             pingTimeout: 5000,
             cookie: false,
             cors: {
-                origin: '*'
+                origin: '*',
+                methods: ["GET", "POST"],
+                allowedHeaders: ['Access-Control-Allow-Origin'],
+                credentials: true
             }
         });
         ServerSocket.io.on('connect', this.StartListeners);

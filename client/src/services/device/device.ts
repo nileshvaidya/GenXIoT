@@ -15,7 +15,7 @@ export const deviceApi = createApi({
   endpoints: (builder) => ({
     getDevicesByClientId: builder.query({
       query: (clientcode) => ({
-        url: `devices/getDevicesByClientId/${clientcode}`,
+        url: `api/devices/getDevicesByClientId/${clientcode}`,
         method: 'GET'
       })
       
@@ -23,7 +23,7 @@ export const deviceApi = createApi({
     }),
     readDeviceByDeviceId: builder.query({
       query: (device_ID) => ({
-        url: `devices/readDeviceBYDeviceId/${device_ID}`,
+        url: `api/devices/readDeviceBYDeviceId/${device_ID}`,
         method: 'GET'
       })
       
@@ -32,7 +32,7 @@ export const deviceApi = createApi({
     
     getDeviceDatabyDeviceId: builder.query({
       query: (device_ID) => ({
-        url: `devicedata/readDeviceDataByDeviceID/${device_ID}`,
+        url: `api/devicedata/readDeviceDataByDeviceID/${device_ID}`,
         method: 'GET'
         
       })
@@ -44,7 +44,7 @@ export const deviceApi = createApi({
         
         // url: `devicedata/readHistoricalDeviceDataByDeviceIDVariableName/8876859487/1660710410890`,
         
-          url: `devicedata/readHistoricalDeviceDataByDeviceIDVariableName/${device_Id}/${minutes}`,
+          url: `api/devicedata/readHistoricalDeviceDataByDeviceIDVariableName/${device_Id}/${minutes}`,
         method: 'GET',
         transformResponse: (response: { data: IDeviceData[] }, meta, arg) => response.data,
         // providesTags: (result, error, id) => [{ type: 'GET' }],

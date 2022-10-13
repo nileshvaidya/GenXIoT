@@ -85,11 +85,11 @@ const StartServer = () => {
         next();
     });
     /** Routes */
-    router.use('/devices', cors(), deviceRoutes);
-    router.use('/devicedata', cors(), deviceDataRoutes);
+    router.use('/api/devices', cors(), deviceRoutes);
+    router.use('/api/devicedata', cors(), deviceDataRoutes);
 
     /** Healthcheck */
-    router.get('/ping', (req, res, next) => res.status(200).json({ message: 'pong' }));
+    router.get('/api/ping', (req, res, next) => res.status(200).json({ message: 'pong' }));
 
     /** Error handling */
     router.use((req, res, next) => {
