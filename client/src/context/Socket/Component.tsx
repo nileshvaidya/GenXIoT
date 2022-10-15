@@ -29,7 +29,9 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
     transports: ["websocket"],
     reconnectionAttempts: 5,
     reconnectionDelay: 5000,
-    autoConnect: false
+    autoConnect: false,
+     extraHeaders: { 'Access-Control-Allow-Credentials':'*' }
+    
   });
 
   useEffect(() => {

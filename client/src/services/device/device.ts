@@ -10,21 +10,27 @@ interface historicalDeviceDataVariables{
 export const deviceApi = createApi({
   reducerPath: 'deviceApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8080/',
+    baseUrl: 'http://localhost:8080',
+    prepareHeaders: (headers, { getState }) => {
+      headers.set('Access-Control-Allow-Origin', '*')
+      return headers
+  }
   }),
   endpoints: (builder) => ({
     getDevicesByClientId: builder.query({
       query: (clientcode) => ({
-        url: `api/devices/getDevicesByClientId/${clientcode}`,
-        method: 'GET'
+        url: `/api/devices/getDevicesByClientId/${clientcode}`,
+        method: 'GET',
+        Headers :['Access-Control-Allow-Origin', '*']
       })
       
       
     }),
     readDeviceByDeviceId: builder.query({
       query: (device_ID) => ({
-        url: `api/devices/readDeviceBYDeviceId/${device_ID}`,
-        method: 'GET'
+        url: `/api/devices/readDeviceBYDeviceId/${device_ID}`,
+        method: 'GET',
+        Headers :['Access-Control-Allow-Origin', '*']
       })
       
       
@@ -32,8 +38,9 @@ export const deviceApi = createApi({
     
     getDeviceDatabyDeviceId: builder.query({
       query: (device_ID) => ({
-        url: `api/devicedata/readDeviceDataByDeviceID/${device_ID}`,
-        method: 'GET'
+        url: `/api/devicedata/readDeviceDataByDeviceID/${device_ID}`,
+        method: 'GET',
+        Headers :['Access-Control-Allow-Origin', '*']
         
       })
     }),
@@ -44,8 +51,9 @@ export const deviceApi = createApi({
         
         // url: `devicedata/readHistoricalDeviceDataByDeviceIDVariableName/8876859487/1660710410890`,
         
-          url: `api/devicedata/readHistoricalDeviceDataByDeviceIDVariableName/${device_Id}/${minutes}`,
+          url: `/api/devicedata/readHistoricalDeviceDataByDeviceIDVariableName/${device_Id}/${minutes}`,
         method: 'GET',
+        Headers :['Access-Control-Allow-Origin', '*'],
         transformResponse: (response: { data: IDeviceData[] }, meta, arg) => response.data,
         // providesTags: (result, error, id) => [{ type: 'GET' }],
         

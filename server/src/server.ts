@@ -10,17 +10,24 @@ import Logging from './library/Logging';
 import deviceRoutes from './routes/Device';
 import deviceDataRoutes from './routes/DeviceData';
 import bodyParser from 'body-parser';
-const connectToDB = require('./db/db');
-var cors = require('cors');
-
+// const connectToDB = require('./db/db');
+import cors from 'cors';
+import { allow } from 'joi';
+import  proxyheaders  from './setupProxy';
 const port = config.server.port;
 const host = config.server.host;
 const mongo_url = 'mongodb://127.0.0.1:27017/genxiot'
 //const mongo_url = 'mongodb://0.0.0.0:27017/genxiot';//?authSource=admin';// config.mongo.url //+ "/"+ config.mongo.db_name;
-const corsOrigin = configuration.get<string>('corsOrigin');
+// CORS is enabled for the selected origins
+let allowedOrigins = ['*'];
 
+const option = {
+    origin: allowedOrigins,
+    Headers: ['Access-Control-Allow-Origin']
+
+};
 const router = express();
-
+router.use(cors(option));
 router.set('view engine', 'ejs');
 router.use(bodyParser.urlencoded({ extended: false }));
 const options = {
@@ -54,6 +61,8 @@ function connectDB() {
   
 
 
+
+
 /** Only Start Server if Mongoose Connects */
 const StartServer = () => {
     /** Log the request */
@@ -71,22 +80,50 @@ const StartServer = () => {
     // StartServer();
     // router.use(express.urlencoded({ extended: true }));
     router.use(express.json());
-
+    router.options('*', cors(option));
     /** Rules of our API */
     router.use((req, res, next) => {
         res.header('Access-Control-Allow-Origin', '*');
-        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 
         if (req.method == 'OPTIONS') {
+            res.header('Access-Control-Allow-Origin');
             res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
             return res.status(200).json({});
         }
 
         next();
     });
+    router.use(function(req, res, next) {
+        var oneof = false;
+        if(req.headers.origin) {
+            res.header('Access-Control-Allow-Origin', req.headers.origin);
+            oneof = true;
+        }
+        if(req.headers['access-control-request-method']) {
+            res.header('Access-Control-Allow-Methods', req.headers['access-control-request-method']);
+            oneof = true;
+        }
+        if(req.headers['access-control-request-headers']) {
+            res.header('Access-Control-Allow-Headers', req.headers['access-control-request-headers']);
+            oneof = true;
+        }
+        // if(oneof) {
+        //     res.header('Access-Control-Max-Age', 60 * 60 * 24 * 365);
+        // }
+    
+        // intercept OPTIONS method
+        if (oneof && req.method == 'OPTIONS') {
+            res.send(200);
+        }
+        else {
+            next();
+        }
+    });
+    
     /** Routes */
-    router.use('/api/devices', cors(), deviceRoutes);
-    router.use('/api/devicedata', cors(), deviceDataRoutes);
+    router.use('/api/devices', cors(option), deviceRoutes);
+    router.use('/api/devicedata', cors(option), deviceDataRoutes);
 
     /** Healthcheck */
     router.get('/api/ping', (req, res, next) => res.status(200).json({ message: 'pong' }));
