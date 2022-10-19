@@ -20,13 +20,15 @@ var host = config_1.config.server.host;
 var mongo_url = 'mongodb://127.0.0.1:27017/genxiot';
 //const mongo_url = 'mongodb://0.0.0.0:27017/genxiot';//?authSource=admin';// config.mongo.url //+ "/"+ config.mongo.db_name;
 // CORS is enabled for the selected origins
-var allowedOrigins = ['*'];
-var option = {
-    origin: allowedOrigins,
-    allowedHeaders: ['Access-Control-Allow-Origin: *']
-};
 var router = (0, express_1.default)();
-router.use((0, cors_1.default)(option));
+var whitelist = ["http://localhost"];
+// var corsOptions = {
+//     origin: '*', // 'http://genxiot.com',
+//     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+//     credentials : true
+//   }
+router.use((0, cors_1.default)());
+// router.use(cors(option));
 router.set('view engine', 'ejs');
 router.use(body_parser_1.default.urlencoded({ extended: false }));
 var options = {
@@ -68,20 +70,50 @@ var StartServer = function () {
     // StartServer();
     // router.use(express.urlencoded({ extended: true }));
     router.use(express_1.default.json());
+    // router.options('*', cors());
     /** Rules of our API */
-    router.use(function (req, res, next) {
-        res.header('Access-Control-Allow-Origin', '*');
-        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-        if (req.method == 'OPTIONS') {
-            res.header('Access-Control-Allow-Origin');
-            res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
-            return res.status(200).json({});
-        }
-        next();
-    });
+    // router.use((req, res, next) => {
+    //     res.header('Access-Control-Allow-Origin', '*');
+    //     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    //     if (req.method == 'OPTIONS') {
+    //         res.header('Access-Control-Allow-Origin', '*');
+    //         res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+    //         return res.status(200).json({});
+    //     }
+    //     next();
+    // });
+    // router.use(function(req, res, next) {
+    //     var oneof = false;
+    //     if(req.headers.origin) {
+    //         res.header('Access-Control-Allow-Origin', req.headers.origin);
+    //         oneof = true;
+    //     }
+    //     if(req.headers['access-control-request-method']) {
+    //         res.header('Access-Control-Allow-Methods', req.headers['access-control-request-method']);
+    //         oneof = true;
+    //     }
+    //     if(req.headers['access-control-request-headers']) {
+    //         res.header('Access-Control-Allow-Headers', req.headers['access-control-request-headers']);
+    //         oneof = true;
+    //     }
+    //     // if(oneof) {
+    //     //     res.header('Access-Control-Max-Age', 60 * 60 * 24 * 365);
+    //     // }
+    //     // intercept OPTIONS method
+    //     if (oneof && req.method == 'OPTIONS') {
+    //         res.send(200);
+    //     }
+    //     else {
+    //         next();
+    //     }
+    // });
     /** Routes */
-    router.use('/api/devices', (0, cors_1.default)(option), Device_1.default);
-    router.use('/api/devicedata', (0, cors_1.default)(option), DeviceData_1.default);
+    // router.use('/api/devices',createProxyMiddleware({ target: 'http://localhost:8080',ssl : false, changeOrigin: true }),  deviceRoutes);
+    // router.use('/api/devicedata',createProxyMiddleware({ target: 'http://localhost:8080',ssl : false, changeOrigin: true }), deviceDataRoutes);
+    // /** Routes */
+    // router.use('*', cors);
+    router.use('/api/devices', (0, cors_1.default)(), Device_1.default);
+    router.use('/api/devicedata', (0, cors_1.default)(), DeviceData_1.default);
     /** Healthcheck */
     router.get('/api/ping', function (req, res, next) { return res.status(200).json({ message: 'pong' }); });
     /** Error handling */

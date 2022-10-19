@@ -25,7 +25,9 @@ const SocketContextComponent: React.FunctionComponent<ISocketContextComponentPro
   const [loading, setLoading] = useState(true);
   const [device_Id, setDevice_Id] = useState("");
 
-  const socket = useSocket("http://localhost:8080", {
+  const socket = useSocket("https://genxiot.com", {
+  // const socket = useSocket("http://128.199.19.252.com", {
+    // const socket = useSocket("http://localhost", {
     transports: ["websocket"],
     reconnectionAttempts: 5,
     reconnectionDelay: 5000,

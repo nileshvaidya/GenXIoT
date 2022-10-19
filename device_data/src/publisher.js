@@ -5,7 +5,7 @@ require('dotenv').config()
 
 
 const clientId = 'mqttjs_' + Math.random().toString(8).substr(2, 4) 
-const host = '165.232.191.93';
+const host = '128.199.19.252';
 const port = '1883';
 const connectUrl = `mqtt://${host}:${port}`
 console.log (connectUrl);

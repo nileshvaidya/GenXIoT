@@ -13,29 +13,30 @@ import bodyParser from 'body-parser';
 // const connectToDB = require('./db/db');
 import cors from 'cors';
 import { allow } from 'joi';
-import  proxyheaders  from './setupProxy';
+// import proxyheaders from './setupProxy';
+import { createProxyMiddleware, Filter, Options, RequestHandler } from 'http-proxy-middleware';
 const port = config.server.port;
 const host = config.server.host;
 const mongo_url = 'mongodb://127.0.0.1:27017/genxiot'
 //const mongo_url = 'mongodb://0.0.0.0:27017/genxiot';//?authSource=admin';// config.mongo.url //+ "/"+ config.mongo.db_name;
 // CORS is enabled for the selected origins
-let allowedOrigins = ['*'];
-
-const option = {
-    origin: allowedOrigins,
-    Headers: ['Access-Control-Allow-Origin']
-
-};
 const router = express();
-router.use(cors(option));
+const whitelist = ["http://localhost"]
+
+// var corsOptions = {
+//     origin: '*', // 'http://genxiot.com',
+//     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+//     credentials : true
+//   }
+router.use(cors());
+
+// router.use(cors(option));
 router.set('view engine', 'ejs');
 router.use(bodyParser.urlencoded({ extended: false }));
 const options = {
     dbName: 'genxiot',
     useNewUrlParser: true,
-    useUnifiedTopology: true,
-    
-    
+    useUnifiedTopology: true,  
 };
 let dbConnected
 // Connect to MongoDB
@@ -43,8 +44,8 @@ function connectDB() {
     console.log('connecting to mongodb...')
     mongoose
       .connect(
-          'mongodb://mongodb:27017/genxiot', options
-        // 'mongodb://0.0.0.0:27017/genxiot', options
+        //   'mongodb://mongodb:27017/genxiot', options
+        'mongodb://0.0.0.0:27017/genxiot', options
       )
       .then(() => {
           dbConnected = true;
@@ -80,50 +81,54 @@ const StartServer = () => {
     // StartServer();
     // router.use(express.urlencoded({ extended: true }));
     router.use(express.json());
-    router.options('*', cors(option));
+    // router.options('*', cors());
     /** Rules of our API */
-    router.use((req, res, next) => {
-        res.header('Access-Control-Allow-Origin', '*');
-        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    // router.use((req, res, next) => {
+    //     res.header('Access-Control-Allow-Origin', '*');
+    //     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 
-        if (req.method == 'OPTIONS') {
-            res.header('Access-Control-Allow-Origin');
-            res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
-            return res.status(200).json({});
-        }
+    //     if (req.method == 'OPTIONS') {
+    //         res.header('Access-Control-Allow-Origin', '*');
+    //         res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+    //         return res.status(200).json({});
+    //     }
 
-        next();
-    });
-    router.use(function(req, res, next) {
-        var oneof = false;
-        if(req.headers.origin) {
-            res.header('Access-Control-Allow-Origin', req.headers.origin);
-            oneof = true;
-        }
-        if(req.headers['access-control-request-method']) {
-            res.header('Access-Control-Allow-Methods', req.headers['access-control-request-method']);
-            oneof = true;
-        }
-        if(req.headers['access-control-request-headers']) {
-            res.header('Access-Control-Allow-Headers', req.headers['access-control-request-headers']);
-            oneof = true;
-        }
-        // if(oneof) {
-        //     res.header('Access-Control-Max-Age', 60 * 60 * 24 * 365);
-        // }
+    //     next();
+    // });
+    // router.use(function(req, res, next) {
+    //     var oneof = false;
+    //     if(req.headers.origin) {
+    //         res.header('Access-Control-Allow-Origin', req.headers.origin);
+    //         oneof = true;
+    //     }
+    //     if(req.headers['access-control-request-method']) {
+    //         res.header('Access-Control-Allow-Methods', req.headers['access-control-request-method']);
+    //         oneof = true;
+    //     }
+    //     if(req.headers['access-control-request-headers']) {
+    //         res.header('Access-Control-Allow-Headers', req.headers['access-control-request-headers']);
+    //         oneof = true;
+    //     }
+    //     // if(oneof) {
+    //     //     res.header('Access-Control-Max-Age', 60 * 60 * 24 * 365);
+    //     // }
     
-        // intercept OPTIONS method
-        if (oneof && req.method == 'OPTIONS') {
-            res.send(200);
-        }
-        else {
-            next();
-        }
-    });
+    //     // intercept OPTIONS method
+    //     if (oneof && req.method == 'OPTIONS') {
+    //         res.send(200);
+    //     }
+    //     else {
+    //         next();
+    //     }
+    // });
     
     /** Routes */
-    router.use('/api/devices', cors(option), deviceRoutes);
-    router.use('/api/devicedata', cors(option), deviceDataRoutes);
+    // router.use('/api/devices',createProxyMiddleware({ target: 'http://localhost:8080',ssl : false, changeOrigin: true }),  deviceRoutes);
+    // router.use('/api/devicedata',createProxyMiddleware({ target: 'http://localhost:8080',ssl : false, changeOrigin: true }), deviceDataRoutes);
+    // /** Routes */
+    // router.use('*', cors);
+    router.use('/api/devices', cors(), deviceRoutes);
+    router.use('/api/devicedata',cors(),  deviceDataRoutes);
 
     /** Healthcheck */
     router.get('/api/ping', (req, res, next) => res.status(200).json({ message: 'pong' }));

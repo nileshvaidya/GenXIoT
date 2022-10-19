@@ -3,7 +3,7 @@ export default {
   port: 8080,
   host: "localhost",
   mqttport: 1883,
-  mqtthost: "localhost",
+  mqtthost: "128.199.19.252",
   mqttUsername: "ask",
   mqttPassword: "info"
 };

@@ -1,12 +1,19 @@
+import { createProxyMiddleware, Filter, Options, RequestHandler } from 'http-proxy-middleware';
 
+module.exports = function(app: { use: (arg0: any) => void; }) {
+  app.use(
+    createProxyMiddleware("/api/devices", {
+      target: "http://localhost:8080",
+      secure: false,
+      changeOrigin: true
+    })
+  );
 
-const proxyheaders = (req: { headers: { origin: string; }; }, res: { setHeader: (arg0: string, arg1: string | boolean) => void; }, next: () => void) => {
-	const origin = (req.headers.origin == 'http://localhost:3000') ? 'http://localhost:3000' : 'https://mywebsite.com'
-	res.setHeader('Access-Control-Allow-Origin', origin)
-	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE')
-	res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type')
-	res.setHeader('Access-Control-Allow-Credentials', true)
-	next()
-}
-
-export default proxyheaders;
+  app.use(
+    createProxyMiddleware("/api/devicedata", {
+      target: "http://localhost:8080",
+      secure: false,
+      changeOrigin: true
+    })
+  );
+};

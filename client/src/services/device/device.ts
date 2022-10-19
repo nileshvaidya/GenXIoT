@@ -10,7 +10,9 @@ interface historicalDeviceDataVariables{
 export const deviceApi = createApi({
   reducerPath: 'deviceApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8080',
+    // baseUrl: 'http://localhost',
+    // baseUrl: 'http://128.199.19.252.com',
+    baseUrl: 'https://genxiot.com',
     prepareHeaders: (headers, { getState }) => {
       headers.set('Access-Control-Allow-Origin', '*')
       return headers
@@ -29,8 +31,7 @@ export const deviceApi = createApi({
     readDeviceByDeviceId: builder.query({
       query: (device_ID) => ({
         url: `/api/devices/readDeviceBYDeviceId/${device_ID}`,
-        method: 'GET',
-        Headers :['Access-Control-Allow-Origin', '*']
+        method: 'GET'
       })
       
       
@@ -39,8 +40,7 @@ export const deviceApi = createApi({
     getDeviceDatabyDeviceId: builder.query({
       query: (device_ID) => ({
         url: `/api/devicedata/readDeviceDataByDeviceID/${device_ID}`,
-        method: 'GET',
-        Headers :['Access-Control-Allow-Origin', '*']
+        method: 'GET'
         
       })
     }),
@@ -53,7 +53,6 @@ export const deviceApi = createApi({
         
           url: `/api/devicedata/readHistoricalDeviceDataByDeviceIDVariableName/${device_Id}/${minutes}`,
         method: 'GET',
-        Headers :['Access-Control-Allow-Origin', '*'],
         transformResponse: (response: { data: IDeviceData[] }, meta, arg) => response.data,
         // providesTags: (result, error, id) => [{ type: 'GET' }],
         

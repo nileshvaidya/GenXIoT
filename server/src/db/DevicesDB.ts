@@ -56,7 +56,7 @@ export const getClientCodeFromDeviceId = async (device_Id: any) => {
 // Function 7 : Save DeviceData [input param : topic , Payload, timestamp] [output param : action_status]
 export const saveDeviceData = async (device_Id: string, clientcode: string, topic: string, payload: string) => {
     try {
-        var deviceData = new DeviceData({ device_Id: `${device_Id}`, clientcode: `${clientcode}`, topic: `${topic}`, payload: payload });
+        var deviceData = new DeviceData({ device_Id: `${device_Id}`, clientcode: `${clientcode}`, topic: `${topic}`, payload: JSON.parse(payload) });
         Logging.info('Device_Id : ' + device_Id);
         deviceData._id instanceof mongoose.Schema.Types.ObjectId;
         deviceData.save(function (err, deviceData) {

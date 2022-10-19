@@ -48,7 +48,7 @@ function mqttclient() {
 
     // on receive message event, log the message to the console
     client.on('message', (topic: string, message: string, packet: { payload: { toString: () => any } }) => {
-        //Logging.info('Topic : ' + topic + ' , Payload : ' + message);
+        Logging.info('Topic : ' + topic + ' , Payload : ' + message);
         let v = topic.split('/');
         if (v[0] === 'askdevicedata') {
             //logger.info(JSON.parse(message));
